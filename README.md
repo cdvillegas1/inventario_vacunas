@@ -4,6 +4,16 @@ This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
 If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
 
+## For token generate token KeyCloak
+
+Execute a KeyCloak container for get the toke.
+
+```shell script
+docker run --name keycloak -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -p 8180:8080 -p 8543:8443 jboss/keycloak
+```
+
+> **_NOTE:_** The PostgreSQL execute within docker, the config is the file _application.properties_ , also the credentials been written in this same file
+
 ## Running the application in dev mode
 
 You can run your application in dev mode that enables live coding using:
@@ -25,14 +35,6 @@ You can run your application in dev mode that enables live coding using:
 > In this link is available the Open API documentation: http://localhost:8080/q/swagger-ui/
 
 ![captura de open api](https://github.com/cdvillegas1/inventario_vacunas/blob/master/imagenes/swagger-ui.png)
-
-## For token generate token KeyCloak
-
-Execute a KeyCloak container for get the toke.
-
-```shell script
-docker run --name keycloak -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -p 8180:8080 -p 8543:8443 jboss/keycloak
-```
 
 ## Packaging and running the application
 
