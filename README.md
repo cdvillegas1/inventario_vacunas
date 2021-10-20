@@ -24,7 +24,15 @@ You can run your application in dev mode that enables live coding using:
 
 > In this link is available the Open API documentation: http://localhost:8080/q/swagger-ui/
 
-![Aquí la descripción de la imagen por si no carga](https://github.com/cdvillegas1/inventario_vacunas/blob/master/imagenes/swagger-ui.png)
+![captura de open api](https://github.com/cdvillegas1/inventario_vacunas/blob/master/imagenes/swagger-ui.png)
+
+## For token generate token KeyCloak
+
+Execute a KeyCloak container for get the toke.
+
+```shell script
+docker run --name keycloak -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -p 8180:8080 -p 8543:8443 jboss/keycloak
+```
 
 ## Packaging and running the application
 
