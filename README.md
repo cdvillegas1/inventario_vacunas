@@ -6,7 +6,7 @@ If you want to learn more about Quarkus, please visit its website: https://quark
 
 ## Requirements to run application
 
-1. Install GrallVM
+1. Install GraalVM
 2. Install Docker
 3. Install Maven
 
@@ -18,7 +18,7 @@ Execute a KeyCloak container for get the toke.
 docker run --name keycloak -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -p 8180:8080 -p 8543:8443 jboss/keycloak
 ```
 
-> **_NOTE:_** The PostgreSQL execute within docker, the config is the file _application.properties_ , also the credentials been written in this same file
+> **_NOTE:_** The PostgreSQL execute within docker, the config is the file _application.properties_, also the credentials been written in this same file
 
 ## Running the application in dev mode
 
