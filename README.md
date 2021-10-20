@@ -12,12 +12,17 @@ You can run your application in dev mode that enables live coding using:
 ./mvnw compile quarkus:dev
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+> **_NOTE:_** Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+
+## Requirements to run application
+
+1. Install GrallVM
+2. Install Docker
+3. Install Maven
 
 ## Running OpenAPI Swagger-UI application
->In this link is available the Open API documentation: http://localhost:8080/q/swagger-ui/
 
-
+> In this link is available the Open API documentation: http://localhost:8080/q/swagger-ui/
 
 ## Packaging and running the application
 
