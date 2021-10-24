@@ -1,4 +1,6 @@
-package ec.espe.cadavi;
+package ec.espe.cadavi.services;
+
+import ec.espe.cadavi.entities.Empleado;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.validation.Valid;

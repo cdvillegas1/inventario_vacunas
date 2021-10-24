@@ -1,4 +1,4 @@
-package ec.espe.cadavi;
+package ec.espe.cadavi.entities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -8,10 +8,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.persistence.*;
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Schema(name = "Empleado", description = "Representación de Empleado")
@@ -56,12 +53,12 @@ public class Empleado {
     @JsonInclude(Include.NON_NULL) // anotación para no mostrar la propiedad nula en el JSON
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_vacuna")
-    private Vacuna vacuna;
+    public Vacuna vacuna;
 
     public Empleado() {
     }
 
-    public Empleado(Long id, String cedula, String nombres, String apellidos, String correo, Estado estado) {
+    private Empleado(Long id, String cedula, String nombres, String apellidos, String correo, Estado estado) {
         this.id = id;
         this.cedula = cedula;
         this.nombres = nombres;
@@ -134,6 +131,66 @@ public class Empleado {
 
     public void setVacuna(Vacuna vacuna) {
         this.vacuna = vacuna;
+    }
+
+
+    @Schema(name = "Vacuna", description = "Información de la vacuna")
+    @Entity
+    @Table(name = "vacunas")
+    public static class Vacuna {
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        @Column(name = "id_vacuna")
+        private Long id;
+
+        @Schema(required = true)
+        @NotNull(message = "El Laboratorio es requerido")
+        @Column
+        private Laboratorio laboratorio;
+
+        @Schema(required = true)
+        @NotNull(message = "El la fecha es requerido")
+        @FutureOrPresent(message = "La fecha no puede ser anterior al dia actual")
+        @Column
+        private LocalDate fecha;
+
+        @Schema(required = true)
+        @NotNull(message = "El Laboratorio es requerido")
+        @Column
+        private Integer numeroDosis;
+
+        public Vacuna() {
+        }
+
+        private Vacuna(Laboratorio laboratorio, LocalDate fecha, Integer numDosis) {
+            this.laboratorio = laboratorio;
+            this.fecha = fecha;
+            this.numeroDosis = numDosis;
+        }
+
+        public Laboratorio getLaboratorio() {
+            return laboratorio;
+        }
+
+        public void setLaboratorio(Laboratorio laboratorio) {
+            this.laboratorio = laboratorio;
+        }
+
+        public LocalDate getFecha() {
+            return fecha;
+        }
+
+        public void setFecha(LocalDate fecha) {
+            this.fecha = fecha;
+        }
+
+        public Integer getNumeroDosis() {
+            return numeroDosis;
+        }
+
+        public void setNumeroDosis(Integer numeroDosis) {
+            this.numeroDosis = numeroDosis;
+        }
     }
 }
 
