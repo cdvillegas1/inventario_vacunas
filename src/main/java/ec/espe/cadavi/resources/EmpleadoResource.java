@@ -1,17 +1,20 @@
 package ec.espe.cadavi.resources;
 
-import ec.espe.cadavi.Empleado;
-import ec.espe.cadavi.EmpleadoRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import ec.espe.cadavi.entities.Empleado;
 import ec.espe.cadavi.enums.Estado;
+import ec.espe.cadavi.repositories.EmpleadoRepository;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
-import org.eclipse.microprofile.openapi.annotations.media.ExampleObject;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
-import org.eclipse.microprofile.openapi.annotations.parameters.Parameters;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.jboss.logging.Logger;
+import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
@@ -19,7 +22,8 @@ import javax.validation.Validator;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.lang.annotation.Repeatable;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,7 +35,10 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 @Tag(name = "Recurso Empleado", description = "RESTful API de Empleados")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@ApplicationScoped
 public class EmpleadoResource {
+
+    private static final Logger LOGGER = Logger.getLogger(EmpleadoResource.class.getName());
 
     @Inject
     Validator validator;
@@ -64,9 +71,9 @@ public class EmpleadoResource {
     }
 
     @GET
-    @Path("/estado/{estado}")
-    public Response obtenerEmpleadosVacunados(@PathParam("estado") Estado estado ) {
-        List<Empleado> empleados = empleadoRepository.findByEstado(estado);
+    @Path("/estados/VACUNADOS")
+    public Response obtenerEmpleadosVacunados() {
+        List<Empleado> empleados = empleadoRepository.findVacunados();
         return Response.ok(empleados).build();
     }
 
@@ -90,7 +97,7 @@ public class EmpleadoResource {
         Set<ConstraintViolation<Empleado>> violations = validator.validate(empleado);
         if (violations.isEmpty()) {
             empleadoRepository.persist(empleado);
-            return new Result("Employed is valid! It was validated by manual validation.");
+            return new Result("Emploeado es valido! fue validado manualmente.");
         } else {
             return new Result(violations);
         }
@@ -129,6 +136,34 @@ public class EmpleadoResource {
         public boolean isSuccess() {
             return success;
         }
+    }
 
+    @Provider
+    public static class ErrorMapper implements ExceptionMapper<Exception> {
+
+        @Inject
+        ObjectMapper objectMapper;
+
+        @Override
+        public Response toResponse(Exception exception) {
+            LOGGER.error("Failed to handle request", exception);
+
+            int code = 500;
+            if (exception instanceof WebApplicationException) {
+                code = ((WebApplicationException) exception).getResponse().getStatus();
+            }
+
+            ObjectNode exceptionJson = objectMapper.createObjectNode();
+            exceptionJson.put("exceptionType", exception.getClass().getName());
+            exceptionJson.put("code", code);
+
+            if (exception.getMessage() != null) {
+                exceptionJson.put("error", exception.getMessage());
+            }
+
+            return Response.status(code)
+                    .entity(exceptionJson)
+                    .build();
+        }
     }
 }
