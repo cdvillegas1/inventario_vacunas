@@ -5,5 +5,6 @@ public enum Laboratorio {
     ASTRAZENECA,
     PFIZER,
     JHONSON_JHONSON,
-    SINOVAC;
+    SINOVAC,
+    CANSINO;
 }

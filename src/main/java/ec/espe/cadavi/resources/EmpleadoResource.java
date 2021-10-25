@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import ec.espe.cadavi.entities.Empleado;
 import ec.espe.cadavi.enums.Estado;
+import ec.espe.cadavi.enums.Laboratorio;
 import ec.espe.cadavi.repositories.EmpleadoRepository;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -12,9 +13,7 @@ import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
@@ -35,7 +34,6 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 @Tag(name = "Recurso Empleado", description = "RESTful API de Empleados")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@ApplicationScoped
 public class EmpleadoResource {
 
     private static final Logger LOGGER = Logger.getLogger(EmpleadoResource.class.getName());
@@ -62,6 +60,7 @@ public class EmpleadoResource {
         return Response.ok(empleados).build();
     }
 
+
     @GET
     @Path("{id}")
     public Response obtenerPorId(@PathParam("id") Long id) {
@@ -70,10 +69,30 @@ public class EmpleadoResource {
                 .orElse(Response.status(NOT_FOUND).build());
     }
 
+
     @GET
-    @Path("/estados/VACUNADOS")
-    public Response obtenerEmpleadosVacunados() {
-        List<Empleado> empleados = empleadoRepository.findVacunados();
+    @Path("/search")
+    public Response obtenerEmpleadosPorEstado(@QueryParam("estado") Estado estado) {
+
+        //throw new WebApplicationException("La variable tiene el siguiente valor : " + estado.getClass(), 404);
+        List<Empleado> empleados = empleadoRepository.findByEstado(estado);
+        return Response.ok(empleados).build();
+    }
+
+
+    @GET
+    @Path("/searchvacuna")
+    public Response obtenerEmpleadosPorTipoVacuna(@QueryParam("vacuna") Laboratorio laboratorio) {
+        //throw new WebApplicationException("La variable tiene el siguiente valor : " + laboratorio + " con la siguiente clase -> " + laboratorio.getClass(), 404);
+        List<Empleado> empleados = empleadoRepository.findByVaccineType(laboratorio);
+        return Response.ok(empleados).build();
+    }
+
+    @GET
+    @Path("/searchdate")
+    public Response obtenerEmpleadosPorRangoFecha(@QueryParam("start") String start, @QueryParam("end") String end) {
+//        throw new WebApplicationException("La variables tienen el siguiente valor: " + start + " / " + end + " con la siguiente clase -> " + start.getClass(), 404);
+        List<Empleado> empleados = empleadoRepository.findByDateRange(start, end);
         return Response.ok(empleados).build();
     }
 
@@ -97,11 +116,12 @@ public class EmpleadoResource {
         Set<ConstraintViolation<Empleado>> violations = validator.validate(empleado);
         if (violations.isEmpty()) {
             empleadoRepository.persist(empleado);
-            return new Result("Emploeado es valido! fue validado manualmente.");
+            return new Result("Empleado es valido! fue validado manualmente.");
         } else {
             return new Result(violations);
         }
     }
+
 
     @DELETE
     @Path("{id}")
@@ -137,6 +157,7 @@ public class EmpleadoResource {
             return success;
         }
     }
+
 
     @Provider
     public static class ErrorMapper implements ExceptionMapper<Exception> {

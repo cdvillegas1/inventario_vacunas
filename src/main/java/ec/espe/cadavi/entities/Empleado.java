@@ -15,8 +15,10 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "empleados")
 public class Empleado {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "employeesSequence", sequenceName = "known_employees_id_seq", allocationSize = 1, initialValue = 10)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "employeesSequence")
     @Column(name = "id_empleado")
     private Long id;
 
@@ -58,7 +60,7 @@ public class Empleado {
     public Empleado() {
     }
 
-    private Empleado(Long id, String cedula, String nombres, String apellidos, String correo, Estado estado) {
+    public Empleado(Long id, String cedula, String nombres, String apellidos, String correo, Estado estado) {
         this.id = id;
         this.cedula = cedula;
         this.nombres = nombres;
@@ -139,7 +141,8 @@ public class Empleado {
     @Table(name = "vacunas")
     public static class Vacuna {
         @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
+        @SequenceGenerator(name = "vacunesSequence", sequenceName = "known_vacunes_id_seq", allocationSize = 1, initialValue = 10)
+        @GeneratedValue(strategy = GenerationType.AUTO, generator = "vacunesSequence")
         @Column(name = "id_vacuna")
         private Long id;
 
@@ -193,4 +196,3 @@ public class Empleado {
         }
     }
 }
-
