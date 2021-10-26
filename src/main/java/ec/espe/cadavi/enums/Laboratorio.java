@@ -6,5 +6,5 @@ public enum Laboratorio {
     PFIZER,
     JHONSON_JHONSON,
     SINOVAC,
-    CANSINO;
+    CANSINO
 }
