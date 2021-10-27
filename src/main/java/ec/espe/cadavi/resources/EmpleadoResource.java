@@ -1,18 +1,16 @@
 package ec.espe.cadavi.resources;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import ec.espe.cadavi.entities.Empleado;
 import ec.espe.cadavi.enums.Estado;
 import ec.espe.cadavi.enums.Laboratorio;
 import ec.espe.cadavi.repositories.EmpleadoRepository;
+import ec.espe.cadavi.utils.Result;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.jboss.logging.Logger;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -21,11 +19,8 @@ import javax.validation.Validator;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
@@ -35,8 +30,6 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class EmpleadoResource {
-
-    private static final Logger LOGGER = Logger.getLogger(EmpleadoResource.class.getName());
 
     @Inject
     Validator validator;
@@ -73,8 +66,6 @@ public class EmpleadoResource {
     @GET
     @Path("/search")
     public Response obtenerEmpleadosPorEstado(@QueryParam("estado") Estado estado) {
-
-        //throw new WebApplicationException("La variable tiene el siguiente valor : " + estado.getClass(), 404);
         List<Empleado> empleados = empleadoRepository.findByEstado(estado);
         return Response.ok(empleados).build();
     }
@@ -83,7 +74,6 @@ public class EmpleadoResource {
     @GET
     @Path("/searchvacuna")
     public Response obtenerEmpleadosPorTipoVacuna(@QueryParam("vacuna") Laboratorio laboratorio) {
-        //throw new WebApplicationException("La variable tiene el siguiente valor : " + laboratorio + " con la siguiente clase -> " + laboratorio.getClass(), 404);
         List<Empleado> empleados = empleadoRepository.findByVaccineType(laboratorio);
         return Response.ok(empleados).build();
     }
@@ -91,7 +81,6 @@ public class EmpleadoResource {
     @GET
     @Path("/searchdate")
     public Response obtenerEmpleadosPorRangoFecha(@QueryParam("start") String start, @QueryParam("end") String end) {
-//        throw new WebApplicationException("La variables tienen el siguiente valor: " + start + " / " + end + " con la siguiente clase -> " + start.getClass(), 404);
         List<Empleado> empleados = empleadoRepository.findByDateRange(start, end);
         return Response.ok(empleados).build();
     }
@@ -129,62 +118,5 @@ public class EmpleadoResource {
     public Response deleteById(@PathParam("id") Long id) {
         boolean deleted = empleadoRepository.deleteById(id);
         return deleted ? Response.noContent().build() : Response.status(NOT_FOUND).build();
-    }
-
-
-    public static class Result {
-
-        private String message;
-        private boolean success;
-
-        Result(String message) {
-            this.success = true;
-            this.message = message;
-        }
-
-        Result(Set<? extends ConstraintViolation<?>> violations) {
-            this.success = false;
-            this.message = violations.stream()
-                    .map(cv -> cv.getMessage())
-                    .collect(Collectors.joining(", "));
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public boolean isSuccess() {
-            return success;
-        }
-    }
-
-
-    @Provider
-    public static class ErrorMapper implements ExceptionMapper<Exception> {
-
-        @Inject
-        ObjectMapper objectMapper;
-
-        @Override
-        public Response toResponse(Exception exception) {
-            LOGGER.error("Failed to handle request", exception);
-
-            int code = 500;
-            if (exception instanceof WebApplicationException) {
-                code = ((WebApplicationException) exception).getResponse().getStatus();
-            }
-
-            ObjectNode exceptionJson = objectMapper.createObjectNode();
-            exceptionJson.put("exceptionType", exception.getClass().getName());
-            exceptionJson.put("code", code);
-
-            if (exception.getMessage() != null) {
-                exceptionJson.put("error", exception.getMessage());
-            }
-
-            return Response.status(code)
-                    .entity(exceptionJson)
-                    .build();
-        }
     }
 }
