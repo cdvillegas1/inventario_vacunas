@@ -40,13 +40,24 @@ public class Empleado {
     @Column
     private String apellidos;
 
-    @NotBlank(message = "Los apellidos no pueden estar en blanco")
+    @NotBlank(message = "El correo no pueden estar en blanco")
     @NotNull(message = "El correo es requerido")
     @Email
     @Column
     private String correo;
 
-    //@NotBlank(message = "El estado de vacunación no puede estar en blanco")
+    @PastOrPresent(message = "La fecha no pude ser anterior al dia de hoy")
+    @Column
+    private LocalDate fechaNacimiento;
+
+    @Column
+    private String direccion;
+
+    @Pattern(regexp = "[0-9]{10}", message = "El celular debe tener 10 digitos numericos")
+    @Column
+    private String celular;
+
+
     @NotNull(message = "El estado de vacunación es requerido")
     @Column
     private Estado estado;
@@ -69,12 +80,15 @@ public class Empleado {
         this.estado = estado;
     }
 
-    public Empleado(Long id, String cedula, String nombres, String apellidos, String correo, Estado estado, Laboratorio laboratorio, LocalDate fecha, Integer numDosis) {
+    public Empleado(Long id, String cedula, String nombres, String apellidos, String correo, LocalDate fechaNacimiento, String direccion, String celular, Estado estado, Laboratorio laboratorio, LocalDate fecha, Integer numDosis) {
         this.id = id;
         this.cedula = cedula;
         this.nombres = nombres;
         this.apellidos = apellidos;
         this.correo = correo;
+        this.fechaNacimiento = fechaNacimiento;
+        this.direccion = direccion;
+        this.celular = celular;
         this.estado = estado;
         this.vacuna = new Vacuna(laboratorio, fecha, numDosis);
     }
@@ -117,6 +131,30 @@ public class Empleado {
 
     public void setCorreo(String correo) {
         this.correo = correo;
+    }
+
+    public LocalDate getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getCelular() {
+        return celular;
+    }
+
+    public void setCelular(String celular) {
+        this.celular = celular;
     }
 
     public Estado getEstado() {
