@@ -47,7 +47,7 @@ public class Empleado {
     private String correo;
 
     @PastOrPresent(message = "La fecha no pude ser anterior al dia de hoy")
-    @Column
+    @Column(name = "fecha_nacimiento")
     private LocalDate fechaNacimiento;
 
     @Column
