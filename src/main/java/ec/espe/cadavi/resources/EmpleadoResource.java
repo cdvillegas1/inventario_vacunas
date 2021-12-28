@@ -20,6 +20,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -118,5 +119,38 @@ public class EmpleadoResource {
     public Response deleteById(@PathParam("id") Long id) {
         boolean deleted = empleadoRepository.deleteById(id);
         return deleted ? Response.noContent().build() : Response.status(NOT_FOUND).build();
+    }
+
+    @PUT
+    @Path("{id}")
+    @Transactional
+    public Empleado update(@PathParam("id") Long id, Empleado empleado) {
+//        if (fruit.getName() == null) {
+//            throw new WebApplicationException("Fruit Name was not set on request.", 422);
+//        }
+//
+//        Fruit entity = entityManager.find(Fruit.class, id);
+//
+//        if (entity == null) {
+//            throw new WebApplicationException("Fruit with id of " + id + " does not exist.", 404);
+//        }
+//
+//        entity.setName(fruit.getName());
+
+        Set<ConstraintViolation<Empleado>> violations = validator.validate(empleado);
+
+        Optional<Empleado> id1 = empleadoRepository.findByIdOptional(id);
+
+        Empleado em = id1.orElse(null);
+
+        if (empleadoRepository.isPersistent(em)) {
+            empleadoRepository.updateEmpleado(empleado);
+            return null;
+        } else {
+            empleadoRepository.isPersistent(empleado);
+            throw new WebApplicationException("Contenido de Empleado opcional: " + id1, 404);
+            //throw new WebApplicationException("NOOOOO Employee with id of " + id + " " + id1 + " does not exist.", 404);
+
+        }
     }
 }

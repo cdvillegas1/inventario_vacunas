@@ -43,4 +43,15 @@ public class EmpleadoRepository implements PanacheRepository<Empleado> {
         List<Empleado> list = list("vacuna.fecha between ?1 and ?2", LocalDate.parse(start), LocalDate.parse(end));
         return list;
     }
+
+    public void updateEmpleado(Empleado empleado) {
+//        final int e = update("fechaNacimiento = ?1, direccion = ?2, celular = ?3, estado = ?4 where id = ?5",
+//                empleado.getFechaNacimiento(),
+//                empleado.getDireccion(),
+//                empleado.getCelular(),
+//                empleado.getEstado(),
+//                empleado.getId());
+
+        final int e = update("update empleados, vacunas where ");
+    }
 }

@@ -17,7 +17,7 @@ import java.time.LocalDate;
 public class Empleado {
 
     @Id
-    @SequenceGenerator(name = "employeesSequence", sequenceName = "known_employees_id_seq", allocationSize = 1, initialValue = 10)
+    @SequenceGenerator(name = "employeesSequence", sequenceName = "known_employees_id_seq", allocationSize = 1, initialValue = 15)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "employeesSequence")
     @Column(name = "id_empleado")
     private Long id;
@@ -174,12 +174,28 @@ public class Empleado {
     }
 
 
+    @Override
+    public String toString() {
+        return "Empleado{" +
+                "id=" + id +
+                ", cedula='" + cedula + '\'' +
+                ", nombres='" + nombres + '\'' +
+                ", apellidos='" + apellidos + '\'' +
+                ", correo='" + correo + '\'' +
+                ", fechaNacimiento=" + fechaNacimiento +
+                ", direccion='" + direccion + '\'' +
+                ", celular='" + celular + '\'' +
+                ", estado=" + estado +
+                ", vacuna=" + vacuna +
+                '}';
+    }
+
     @Schema(name = "Vacuna", description = "Información de la vacuna")
     @Entity
     @Table(name = "vacunas")
     public static class Vacuna {
         @Id
-        @SequenceGenerator(name = "vacunesSequence", sequenceName = "known_vacunes_id_seq", allocationSize = 1, initialValue = 10)
+        @SequenceGenerator(name = "vacunesSequence", sequenceName = "known_vacunes_id_seq", allocationSize = 1, initialValue = 15)
         @GeneratedValue(strategy = GenerationType.AUTO, generator = "vacunesSequence")
         @Column(name = "id_vacuna")
         private Long id;
@@ -209,6 +225,14 @@ public class Empleado {
             this.numeroDosis = numDosis;
         }
 
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
         public Laboratorio getLaboratorio() {
             return laboratorio;
         }
@@ -231,6 +255,16 @@ public class Empleado {
 
         public void setNumeroDosis(Integer numeroDosis) {
             this.numeroDosis = numeroDosis;
+        }
+
+        @Override
+        public String toString() {
+            return "Vacuna{" +
+                    "id=" + id +
+                    ", laboratorio=" + laboratorio +
+                    ", fecha=" + fecha +
+                    ", numeroDosis=" + numeroDosis +
+                    '}';
         }
     }
 }
