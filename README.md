@@ -15,6 +15,8 @@ If you want to learn more about Quarkus, please visit its website: https://quark
 Execute a KeyCloak container for get the toke.
 
 ```shell script
+docker run  --name db_posgres -e POSTGRES_USER=cadavi -e POSTGRES_PASSWORD=secret -e POSTGRES_DB=my_db -p 5432:5432 postgres
+
 docker run --name keycloak -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -p 8180:8080 -p 8543:8443 jboss/keycloak
 ```
 
